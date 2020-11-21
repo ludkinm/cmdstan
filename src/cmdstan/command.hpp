@@ -41,6 +41,7 @@
 #include <stan/services/sample/hmc_static_diag_e_adapt.hpp>
 #include <stan/services/sample/hmc_static_unit_e.hpp>
 #include <stan/services/sample/hmc_static_unit_e_adapt.hpp>
+#include <stan/services/sample/aaps_unit_e.hpp>
 #include <stan/services/sample/standalone_gqs.hpp>
 #include <fstream>
 #include <memory>
@@ -586,6 +587,15 @@ int command(int argc, const char *argv[]) {
             num_samples, num_thin, save_warmup, refresh, stepsize,
             stepsize_jitter, max_depth, interrupt, logger, init_writer,
             sample_writer, diagnostic_writer);
+      } else if (engine->value() == "aaps") {
+        categorical_argument *base = dynamic_cast<categorical_argument *>(
+            algo->arg("hmc")->arg("engine")->arg("aaps"));
+        std::cout << "Made it into aaps in command.hpp" << std::endl;
+        return_code = stan::services::sample::aaps_unit_e(
+            model, *init_context, random_seed, id, init_radius, num_warmup,
+            num_samples, num_thin, save_warmup, refresh, stepsize,
+            stepsize_jitter, interrupt, logger, init_writer, sample_writer,
+            diagnostic_writer);
       } else if (engine->value() == "nuts" && metric->value() == "unit_e"
                  && adapt_engaged == true) {
         categorical_argument *base = dynamic_cast<categorical_argument *>(
